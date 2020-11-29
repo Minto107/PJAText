@@ -1,0 +1,6 @@
+this is a test
+of PJAText
+app
+line 4
+line 5
+in this file there are 3 numbers, 6 lines and 113 chars in total

@@ -1,6 +1,7 @@
 this is a silent test
-of PJAText
+of PJAText lentis
 app
+siletn
 line -4
-line 566
-in this file there are 3 numbers, 6 lines and 111 chars in total
+line 566 lentis
+in this file lentsi there are 3 numbers, 6 lines and 111 chars in total lentsi

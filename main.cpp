@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <set>
 
 void lines_amount(std::string file) {
     std::fstream input_file(file);
@@ -173,6 +174,23 @@ void find_palindrome(std::string file, std::vector<std::string> palindromes) {
     }
 }
 
+void sort_alphabetically(std::string file) {
+
+    std::fstream input_file(file);
+    std::set<std::string> sorted;
+    for (std::string line; std::getline(input_file, line); ) {
+        std::stringstream stream(line);
+        for (std::string word; stream >> word; ) {
+            sorted.insert(word);
+        }
+    }
+    //std::sort(sorted.begin(), sorted.end());
+    for(const auto& i : sorted){
+        std::cout << i << ' ';
+    }
+    std::cout << '\n';
+}
+
 int main() {
     std::string file = R"(C:\Users\minto.MSI-B450TM\CLionProjects\PJAText\test.txt)";
     lines_amount(file);
@@ -190,4 +208,5 @@ int main() {
     palindromes.push_back(palindrome);
     palindromes.emplace_back("there");
     find_palindrome(file, palindromes);
+    sort_alphabetically(file);
 }

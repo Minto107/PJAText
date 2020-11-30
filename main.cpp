@@ -83,13 +83,13 @@ void find_anagrams(std::string file, std::string anagrams_to_find) {
         std::stringstream stream(line);
         for (std::string s; stream >> s;) {
             std::map<char, int> occurrences;
-            std::cout << "Word: " << s << '\n';
+            //std::cout << "Word: " << s << '\n';
             for (auto c : s) {
                 occurrences[c] += 1;
             }
-            for (auto[k, value] : occurrences) {
+            /*for (auto[k, value] : occurrences) {
                 std::cout << k << " - " << value << '\n';
-            }
+            }*/
             std::string tmp;
             std::vector<std::string> first;
             std::string tmp1;
@@ -108,25 +108,7 @@ void find_anagrams(std::string file, std::string anagrams_to_find) {
                 second.push_back(tmp1);
                 //std::cout << tmp1 << '\n';
             }
-            int counter = 0;
-            for (int i = 0; i < first.size(); ++i) {
-                tmp = first[i];
-                tmp1 = second[i];
-                if (tmp == tmp1) {
-                    std::cout << "OK\n";
-                }
-                std::cout << "TMP equals to TMP1\n";
-                ++counter;
-                std::cout << "Counter status: " << counter << '\n';
-
-            }
-            /*for (int i = 0; i < first.size(); ++i) {
-                std::cout << "First: " << first[i] << '\n';
-            }
-            for (int i = 0; i < second.size(); ++i) {
-                std::cout << "Second: " << second[i] << '\n';
-            }*/
-            if (counter == anagrams_to_find.length()) {
+            if (first == second) {
                 std::cout << "Word " << s << " is an anagram to " << anagrams_to_find << '\n';
             }
         }

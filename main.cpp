@@ -1,23 +1,22 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <fstream>
 #include <sstream>
 #include <vector>
 #include <map>
 #include <algorithm>
 
 
-void lines_amount(std::string file, std::string output) {
-        std::fstream input_file(file);
-        int counter = 0;
-        for (std::string line; std::getline(input_file, line);) {
-            std::stringstream stream(line);
-            ++counter;
-        }
-    if (output.empty()||output==" ") {
+void lines_amount(const std::string &file, const std::string &output) {
+    std::fstream input_file(file);
+    int counter = 0;
+    for (std::string line; std::getline(input_file, line);) {
+        std::stringstream stream(line);
+        ++counter;
+    }
+    if (output.empty() || output == " ") {
         std::cout << "Amount of lines in specified file: " << counter << '\n';
-    } else{
+    } else {
         std::ofstream os;
         os.open(output, std::ios_base::app);
         os << "Amount of lines in specified file: " << counter << '\n';
@@ -25,7 +24,7 @@ void lines_amount(std::string file, std::string output) {
     }
 }
 
-void number_amount(std::string file, std::string output) {
+void number_amount(const std::string &file, const std::string &output) {
     std::fstream input_file(file);
     int counter = 0;
     for (std::string line; std::getline(input_file, line);) {
@@ -37,30 +36,31 @@ void number_amount(std::string file, std::string output) {
                 ++counter;
             }
         }
-    } if(output.empty()||output==" ") {
+    }
+    if (output.empty() || output == " ") {
         std::cout << "Numbers in specified file: " << counter << '\n';
     } else {
         std::ofstream os;
         os.open(output, std::ios_base::app);
-        os <<"Numbers in specified file: " << counter << '\n';
+        os << "Numbers in specified file: " << counter << '\n';
         os.close();
     }
 }
 
-void digit_amount(std::string file, std::string output) {
+void digit_amount(const std::string &file, const std::string &output) {
     std::fstream input_file(file);
     int counter = 0;
     for (std::string line; std::getline(input_file, line);) {
         std::stringstream stream(line);
         for (std::string s; stream >> s;) {
-            for (int i = 0; i < s.size(); ++i) {
-                if (isdigit(s[i])) {
+            for (char i : s) {
+                if (isdigit(i)) {
                     counter++;
                 }
             }
         }
     }
-    if(output.empty()||output==" ") {
+    if (output.empty() || output == " ") {
         std::cout << "Digits in specified file: " << counter << '\n';
     } else {
         std::ofstream os;
@@ -71,13 +71,13 @@ void digit_amount(std::string file, std::string output) {
 
 }
 
-void char_amount(std::string file, std::string output) {
+void char_amount(const std::string &file, const std::string &output) {
     std::fstream input_file(file);
     int counter = 0;
     for (std::string line; std::getline(input_file, line);) {
         std::stringstream stream(line);
-        for (int i = 0; i < line.length(); ++i) {
-            if (isspace(line.at(i))) {
+        for (char i : line) {
+            if (isspace(i)) {
                 ++counter;
             }
         }
@@ -85,7 +85,7 @@ void char_amount(std::string file, std::string output) {
             counter = counter + word.size();
         }
     }
-    if (output.empty()||output==" ") {
+    if (output.empty() || output == " ") {
         std::cout << "Number of chars in specified file: " << counter << '\n';
     } else {
         std::ofstream os;
@@ -95,13 +95,13 @@ void char_amount(std::string file, std::string output) {
     }
 }
 
-void find_anagrams(std::string file, std::vector<std::string> anagrams_to_find, std::string output) {
-    for (int i = 0; i < anagrams_to_find.size(); ++i) {
-        std::string anagram_to_find = anagrams_to_find[i];
+void find_anagrams(const std::string &file, const std::vector<std::string> &anagrams_to_find, const std::string &output) {
+    for (const auto &anagram_to_find : anagrams_to_find) {
         std::map<char, int> occurrences_in_anagrams_to_find;
         for (auto c : anagram_to_find) {
             occurrences_in_anagrams_to_find[c] += 1;
-        } if (output.empty()||output==" ") {
+        }
+        if (output.empty() || output == " ") {
             std::cout << "Anagrams for word " << anagram_to_find << ": ";
         } else {
             std::ofstream os;
@@ -134,7 +134,7 @@ void find_anagrams(std::string file, std::vector<std::string> anagrams_to_find, 
                     second.push_back(tmp1);
                 }
                 if (first == second) {
-                    if (output.empty()||output==" ") {
+                    if (output.empty() || output == " ") {
                         std::cout << s << ", ";
                     } else {
                         std::ofstream os;
@@ -144,7 +144,8 @@ void find_anagrams(std::string file, std::vector<std::string> anagrams_to_find, 
                     }
                 }
             }
-        }if (output.empty()||output==" ") {
+        }
+        if (output.empty() || output == " ") {
             std::cout << '\n';
         } else {
             std::ofstream os;
@@ -155,11 +156,10 @@ void find_anagrams(std::string file, std::vector<std::string> anagrams_to_find, 
     }
 }
 
-void find_palindrome(std::string file, std::vector<std::string> palindromes, std::string output) {
-    for (int i = 0; i < palindromes.size(); ++i) {
-        std::string palindrome = palindromes[i];
+void find_palindrome(const std::string &file, const std::vector<std::string> &palindromes, const std::string &output) {
+    for (auto palindrome : palindromes) {
         std::fstream input_file(file);
-        if (output.empty()||output==" ") {
+        if (output.empty() || output == " ") {
             std::cout << "Palindromes for word " << palindrome << ": ";
         } else {
             std::ofstream os;
@@ -174,7 +174,7 @@ void find_palindrome(std::string file, std::vector<std::string> palindromes, std
                 std::string tmp = word;
                 std::reverse(tmp.begin(), tmp.end());
                 if (tmp == palindrome) {
-                    if (output.empty()||output==" ") {
+                    if (output.empty() || output == " ") {
                         std::cout << tmp << ", ";
                     } else {
                         std::ofstream os;
@@ -185,7 +185,7 @@ void find_palindrome(std::string file, std::vector<std::string> palindromes, std
                 }
             }
         }
-        if (output.empty()||output==" ") {
+        if (output.empty() || output == " ") {
             std::cout << '\n';
         } else {
             std::ofstream os;
@@ -196,7 +196,7 @@ void find_palindrome(std::string file, std::vector<std::string> palindromes, std
     }
 }
 
-void sort_alphabetically(std::string file, std::string output) {
+void sort_alphabetically(const std::string &file, const std::string &output) {
 
     std::fstream input_file(file);
     std::vector<std::string> sorted;
@@ -214,7 +214,7 @@ void sort_alphabetically(std::string file, std::string output) {
         return x < y;
     });
     for (const auto &i : sorted) {
-        if (output.empty()||output==" ") {
+        if (output.empty() || output == " ") {
             std::cout << i << ' ';
         } else {
             std::ofstream os;
@@ -223,7 +223,7 @@ void sort_alphabetically(std::string file, std::string output) {
             os.close();
         }
     }
-    if (output.empty()||output==" ") {
+    if (output.empty() || output == " ") {
         std::cout << '\n';
     } else {
         std::ofstream os;
@@ -233,7 +233,7 @@ void sort_alphabetically(std::string file, std::string output) {
     }
 }
 
-void sort_reverse_alphabetically(std::string file, std::string output) {
+void sort_reverse_alphabetically(const std::string &file, const std::string &output) {
 
     std::fstream input_file(file);
     std::vector<std::string> sorted;
@@ -251,7 +251,7 @@ void sort_reverse_alphabetically(std::string file, std::string output) {
         return x > y;
     });
     for (const auto &i : sorted) {
-        if (output.empty()||output==" ") {
+        if (output.empty() || output == " ") {
             std::cout << i << ' ';
         } else {
             std::ofstream os;
@@ -260,7 +260,7 @@ void sort_reverse_alphabetically(std::string file, std::string output) {
             os.close();
         }
     }
-    if (output.empty()||output==" ") {
+    if (output.empty() || output == " ") {
         std::cout << '\n';
     } else {
         std::ofstream os;
@@ -273,21 +273,22 @@ void sort_reverse_alphabetically(std::string file, std::string output) {
 int main() {
     std::string file = R"(C:\Users\minto.MSI-B450TM\CLionProjects\PJAText\test.txt)";
     std::string output = R"(C:\Users\minto.MSI-B450TM\CLionProjects\PJAText\output.txt)";
-    lines_amount(file, output);
-    number_amount(file, output);
-    digit_amount(file, output);
-    char_amount(file, output);
+    std::string clr;
+    lines_amount(file, clr);
+    number_amount(file, clr);
+    digit_amount(file, clr);
+    char_amount(file, clr);
     std::string anagramExample = "listen";
     std::vector<std::string> anagram_v;
     anagram_v.push_back(anagramExample);
     anagram_v.emplace_back("pap");
     anagram_v.emplace_back("life");
-    find_anagrams(file, anagram_v, output);
+    find_anagrams(file, anagram_v, clr);
     std::string palindrome = "test";
     std::vector<std::string> palindromes;
     palindromes.push_back(palindrome);
     palindromes.emplace_back("there");
-    find_palindrome(file, palindromes, output);
-    sort_alphabetically(file, output);
-    sort_reverse_alphabetically(file, output);
+    find_palindrome(file, palindromes, clr);
+    sort_alphabetically(file, clr);
+    sort_reverse_alphabetically(file, clr);
 }

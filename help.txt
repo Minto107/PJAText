@@ -1,0 +1,19 @@
+=========================
+=        PJAText        =
+=========================
+
+    --help              - opens this file
+-f  --file              - specifies path to the input file
+-n  --newlines          - counts lines in specified file
+-d  --digits            - counts digits in specified file
+-dd --numbers           - counts numbers in specified file
+-c  --chars             - counts chars in specified file
+-a  --anagrams          - finds anagrams to provided words in specified file
+-p  --palindrome        - finds palindromes to provided words in specified file
+-s  --sorted            - sorts specified file in alphabetical order
+-rs --reverse-sorted    - sorts specified file in reverse alphabetical order
+-o  --output            - redirects output to a specified file
+-i  --input             - reads flags and arguments from specified file
+
+Example usage: PJAText.exe -f example.txt -n -c
+Example output: Amount of lines in specified file: X\n Number of chars in specified file: Y\n

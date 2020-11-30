@@ -6,7 +6,7 @@
 #include <map>
 #include <algorithm>
 
-void linesAmount(std::string file) {
+void lines_amount(std::string file) {
     std::fstream input_file(file);
     int counter = 0;
     for (std::string line; std::getline(input_file, line);) {
@@ -16,7 +16,7 @@ void linesAmount(std::string file) {
     std::cout << "Amount of lines in specified file: " << counter << '\n';
 }
 
-void numberAmount(std::string file) {
+void number_amount(std::string file) {
     std::fstream input_file(file);
     int counter = 0;
     for (std::string line; std::getline(input_file, line);) {
@@ -32,8 +32,7 @@ void numberAmount(std::string file) {
     std::cout << "Numbers in specified file: " << counter << '\n';
 }
 
-
-void digitAmount(std::string file) {
+void digit_amount(std::string file) {
     std::fstream input_file(file);
     int counter = 0;
     for (std::string line; std::getline(input_file, line);) {
@@ -50,7 +49,7 @@ void digitAmount(std::string file) {
 
 }
 
-void charAmount(std::string file) {
+void char_amount(std::string file) {
     std::fstream input_file(file);
     int counter = 0;
     for (std::string line; std::getline(input_file, line);) {
@@ -176,10 +175,10 @@ void find_palindrome(std::string file, std::vector<std::string> palindromes) {
 
 int main() {
     std::string file = R"(C:\Users\minto.MSI-B450TM\CLionProjects\PJAText\test.txt)";
-    linesAmount(file);
-    numberAmount(file);
-    digitAmount(file);
-    charAmount(file);
+    lines_amount(file);
+    number_amount(file);
+    digit_amount(file);
+    char_amount(file);
     std::string anagramExample = "listen";
     std::vector<std::string> anagram_v;
     anagram_v.push_back(anagramExample);

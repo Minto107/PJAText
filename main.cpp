@@ -5,7 +5,12 @@
 #include <vector>
 #include <map>
 #include <algorithm>
-#include <set>
+
+struct case_cmp {
+    bool operator()(char lhs, char rhs) const {
+        return (std::isupper(lhs) && std::tolower(lhs) == rhs) || std::tolower(lhs) < std::tolower(rhs);
+    }
+};
 
 void lines_amount(std::string file) {
     std::fstream input_file(file);
@@ -177,14 +182,21 @@ void find_palindrome(std::string file, std::vector<std::string> palindromes) {
 void sort_alphabetically(std::string file) {
 
     std::fstream input_file(file);
-    std::set<std::string> sorted;
+    std::vector<std::string> sorted;
     for (std::string line; std::getline(input_file, line); ) {
         std::stringstream stream(line);
         for (std::string word; stream >> word; ) {
-            sorted.insert(word);
+            sorted.push_back(word);
         }
     }
-    //std::sort(sorted.begin(), sorted.end());
+    std::sort(sorted.begin(), sorted.end(), [](std::string x, std::string y)
+    {
+        for(auto &ref:x)
+            ref = tolower(ref);
+        for(auto &ref:y)
+            ref = tolower(ref);
+        return x < y;
+    });
     for(const auto& i : sorted){
         std::cout << i << ' ';
     }

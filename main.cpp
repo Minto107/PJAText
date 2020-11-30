@@ -203,6 +203,30 @@ void sort_alphabetically(std::string file) {
     std::cout << '\n';
 }
 
+void sort_reverse_alphabetically(std::string file) {
+
+    std::fstream input_file(file);
+    std::vector<std::string> sorted;
+    for (std::string line; std::getline(input_file, line); ) {
+        std::stringstream stream(line);
+        for (std::string word; stream >> word; ) {
+            sorted.push_back(word);
+        }
+    }
+    std::sort(sorted.begin(), sorted.end(), [](std::string x, std::string y)
+    {
+        for(auto &ref:x)
+            ref = tolower(ref);
+        for(auto &ref:y)
+            ref = tolower(ref);
+        return x > y;
+    });
+    for(const auto& i : sorted){
+        std::cout << i << ' ';
+    }
+    std::cout << '\n';
+}
+
 int main() {
     std::string file = R"(C:\Users\minto.MSI-B450TM\CLionProjects\PJAText\test.txt)";
     lines_amount(file);
@@ -221,4 +245,5 @@ int main() {
     palindromes.emplace_back("there");
     find_palindrome(file, palindromes);
     sort_alphabetically(file);
+    sort_reverse_alphabetically(file);
 }

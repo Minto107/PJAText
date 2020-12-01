@@ -321,7 +321,6 @@ int main(int argc, char **argv) {
             switch (str2int(args[i].data())) {
                 case str2int("-n"):
                 case str2int("--newlines"):
-                    std::cout << '\n' << output;
                     lines_amount(file, output);
                     break;
                 case str2int("-d"):

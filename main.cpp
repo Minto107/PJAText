@@ -95,7 +95,8 @@ void char_amount(const std::string &file, const std::string &output = "") {
     }
 }
 
-void find_anagrams(const std::string &file, const std::vector<std::string> &anagrams_to_find, const std::string &output = "") {
+void find_anagrams(const std::string &file, const std::vector<std::string> &anagrams_to_find,
+                   const std::string &output = "") {
     for (const auto &anagram_to_find : anagrams_to_find) {
         std::map<char, int> occurrences_in_anagrams_to_find;
         for (auto c : anagram_to_find) {
@@ -156,7 +157,8 @@ void find_anagrams(const std::string &file, const std::vector<std::string> &anag
     }
 }
 
-void find_palindrome(const std::string &file, const std::vector<std::string> &palindromes, const std::string &output = "") {
+void
+find_palindrome(const std::string &file, const std::vector<std::string> &palindromes, const std::string &output = "") {
     for (auto palindrome : palindromes) {
         std::fstream input_file(file);
         if (output.empty() || output == " ") {
@@ -167,7 +169,6 @@ void find_palindrome(const std::string &file, const std::vector<std::string> &pa
             os << "Palindromes for word " << palindrome << ": ";
             os.close();
         }
-        std::reverse(palindrome.begin(), palindrome.end());
         for (std::string line; std::getline(input_file, line);) {
             std::stringstream stream(line);
             for (std::string word; stream >> word;) {
@@ -233,7 +234,7 @@ void sort_alphabetically(const std::string &file, const std::string &output = ""
     }
 }
 
-void sort_reverse_alphabetically(const std::string &file, const std::string& output="") {
+void sort_reverse_alphabetically(const std::string &file, const std::string &output = "") {
 
     std::fstream input_file(file);
     std::vector<std::string> sorted;
@@ -270,77 +271,138 @@ void sort_reverse_alphabetically(const std::string &file, const std::string& out
     }
 }
 
-void help(){
+void help() {
     std::ifstream input_file("C:\\Users\\minto.MSI-B450TM\\CLionProjects\\PJAText\\help.txt");
     std::string line;
-    for( std::string line; getline( input_file, line ); )
-    {
+    for (std::string line; getline(input_file, line);) {
         std::cout << line << '\n';
     }
 }
 
 
-constexpr unsigned int str2int(const char* str, int h = 0)
-{
-    return !str[h] ? 5381 : (str2int(str, h+1) * 33) ^ str[h];
+constexpr unsigned int str2int(const char *str, int h = 0) {
+    return !str[h] ? 5381 : (str2int(str, h + 1) * 33) ^ str[h];
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
     std::vector<std::string> args(argv + 1, argv + argc);
     std::string file;
+    std::string output;
+    std::vector<std::string> anagrams;
+    std::vector<std::string> palindromes;
+    std::vector<int> skip_those;
+    std::vector<std::string> input;
+    std::fstream input_file(args[1]);
     /*for (const auto& x : args) {
-        std::cout << '[' << x << "]\n";
-    }
-    if (args[0]=="-h"||args[0]=="--help"){
-        help();
+        std::cout << ' ' << x << " \n";
     }*/
     for (int i = 0; i < args.size(); ++i) {
-        //std::cout << "Argument: " << args[i] << '\n';
-        switch (str2int(args[i].data())) {
-            case str2int("--help"):
-            case str2int(""):
-                help();
-                break;
-            case str2int("-f"):
-            case str2int("--file"):
-                file = args[i+1];
-                ++i;
-                break;
-            case str2int("-n"):
-            case str2int("--newlines"):
-                lines_amount(file);
-                break;
-            case str2int("-d"):
-            case str2int("--digits"):
-                digit_amount(file);
-                break;
-            case str2int("-dd"):
-            case str2int("--numbers"):
-                number_amount(file);
-                break;
-            case str2int("-c"):
-            case str2int("--chars"):
-                char_amount(file);
-                break;
-            case str2int("-a"):
-            case str2int("--anagrams"):
-                // TODO find_anagrams(file, "");
-                break;
-            case str2int("-p"):
-            case str2int("--palindrome"):
-                // TODO same as above
-                break;
-            case str2int("-s"):
-            case str2int("--sorted"):
-                sort_alphabetically(file);
-                break;
-            case str2int("-rs"):
-            case str2int("--reverse-sorted"):
-                sort_reverse_alphabetically(file);
-                break;
-            default:
-                help();
-                std::cout << "\nInvalid parameter usage, please refer to the help above.\n";
+        if (args[i] == "-o") {
+            output = args[i + 1];
+            skip_those.push_back(i);
+            //std::cout << "Output path: " << output << '\n';
+        }
+    }
+    std::cout << '\n';
+    bool skip = false;
+    bool skip1 = false;
+
+    for (int i = 0; i < args.size(); ++i) {
+        if (i != 0) {
+            switch (str2int(args[i].data())) {
+                case str2int("-n"):
+                case str2int("--newlines"):
+                    lines_amount(file, output);
+                    break;
+                case str2int("-d"):
+                case str2int("--digits"):
+                    digit_amount(file, output);
+                    break;
+                case str2int("-dd"):
+                case str2int("--numbers"):
+                    number_amount(file, output);
+                    break;
+                case str2int("-c"):
+                case str2int("--chars"):
+                    char_amount(file, output);
+                    break;
+                case str2int("-a"):
+                case str2int("--anagrams"):
+
+                    for (int j = i; j < args.size(); ++j) {
+                        if (args[j] == "-p" || args[j] == "--palindromes"){
+                            skip = true;
+                        } else if(args[j] == "-o" || args[j] == "--output"){
+                            skip = true;
+                            //output = args[j+1];
+                        } else if (!(args[j].find("--") == 0 || args[j].find('-') == 0) && !skip) {
+                            anagrams.push_back(args[j]);
+                            skip_those.push_back(j);
+                        }
+                    }
+                    find_anagrams(file, anagrams, output);
+                    break;
+                case str2int("-p"):
+                case str2int("--palindromes"):
+                    for (int j = i; j < args.size(); ++j) {
+                        if (args[j] == "-a" || args[j] == "--anagrams" || args[j] == "-o" || args[j] == "--output") {
+                            skip1 = true;
+                        }else if(args[j] == "-o" || args[j] == "--output"){
+                                skip1 = true;
+                                //output = args[j+1];
+                        } else if (!(args[j].find("--") == 0 || args[j].find('-') == 0) && !skip1) {
+                            palindromes.push_back(args[j]);
+                            skip_those.push_back(j);
+                        }
+                    }
+                    find_palindrome(file, palindromes, output);
+                    break;
+                case str2int("-s"):
+                case str2int("--sorted"):
+                    sort_alphabetically(file, output);
+                    break;
+                case str2int("-rs"):
+                case str2int("--reverse-sorted"):
+                    sort_reverse_alphabetically(file, output);
+                    break;
+                case str2int("-o"):
+                case str2int("--output"):
+                    //std::cout << "Outputting to the file: " << output << '\n';
+                    ++i;
+                    break;
+                default:
+                    //help();
+
+                    break;
+            }
+        } else {
+            switch (str2int(args[i].data())) {
+                case str2int("--help"):
+                case str2int(""):
+                    help();
+                    break;
+                case str2int("-f"):
+                case str2int("--file"):
+                    file = args[i + 1];
+                    ++i;
+                    break;
+                case str2int("-i"):
+                case str2int("--input"):
+                    // TODO 95%
+                    for (std::string line; std::getline(input_file, line);) {
+                        std::stringstream stream(line);
+                        for (std::string word; stream >> word;) {
+                            input.push_back(word);
+                        }
+                    }
+                    args=input;
+                    file=input[1];
+                    break;
+                default:
+                    help();
+                    std::cout << "\nInvalid parameter usage, please refer to the help above.\n";
+                    break;
+            }
         }
     }
     /*std::string file = R"(C:\Users\minto.MSI-B450TM\CLionProjects\PJAText\test.txt)";

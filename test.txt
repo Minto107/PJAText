@@ -4,5 +4,7 @@ app
 siletn
 ppa
 line -4
+kayak
+pap
 line 566 lentis
 in this file lentsi there are 3 numbers, 6 lines and 111 chars in total lentsi

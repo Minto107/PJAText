@@ -6,6 +6,11 @@
 #include <map>
 #include <algorithm>
 
+/**
+ *
+ * @param file
+ * @param output
+ */
 
 void lines_amount(const std::string &file, const std::string &output = "") {
     std::fstream input_file(file);
@@ -279,7 +284,6 @@ void help() {
     }
 }
 
-
 constexpr unsigned int str2int(const char *str, int h = 0) {
     return !str[h] ? 5381 : (str2int(str, h + 1) * 33) ^ str[h];
 }
@@ -293,17 +297,22 @@ int main(int argc, char **argv) {
     std::vector<int> skip_those;
     std::vector<std::string> input;
     std::fstream input_file(args[1]);
-    /*for (const auto& x : args) {
-        std::cout << ' ' << x << " \n";
-    }*/
     for (int i = 0; i < args.size(); ++i) {
-        if (args[i] == "-o") {
+        if (args[i] == "-i" || args[i] == "--input") {
+            for (std::string line; std::getline(input_file, line);) {
+                std::stringstream stream(line);
+                for (std::string word; stream >> word;) {
+                    input.push_back(word);
+                }
+                args = input;
+                i = 1;
+            }
+        }
+        if (args[i] == "-o" || args[i] == "--output") {
             output = args[i + 1];
             skip_those.push_back(i);
-            //std::cout << "Output path: " << output << '\n';
         }
     }
-    std::cout << '\n';
     bool skip = false;
     bool skip1 = false;
 
@@ -312,6 +321,7 @@ int main(int argc, char **argv) {
             switch (str2int(args[i].data())) {
                 case str2int("-n"):
                 case str2int("--newlines"):
+                    std::cout << '\n' << output;
                     lines_amount(file, output);
                     break;
                 case str2int("-d"):
@@ -328,13 +338,11 @@ int main(int argc, char **argv) {
                     break;
                 case str2int("-a"):
                 case str2int("--anagrams"):
-
                     for (int j = i; j < args.size(); ++j) {
-                        if (args[j] == "-p" || args[j] == "--palindromes"){
+                        if (args[j] == "-p" || args[j] == "--palindromes") {
                             skip = true;
-                        } else if(args[j] == "-o" || args[j] == "--output"){
+                        } else if (args[j] == "-o" || args[j] == "--output") {
                             skip = true;
-                            //output = args[j+1];
                         } else if (!(args[j].find("--") == 0 || args[j].find('-') == 0) && !skip) {
                             anagrams.push_back(args[j]);
                             skip_those.push_back(j);
@@ -347,9 +355,8 @@ int main(int argc, char **argv) {
                     for (int j = i; j < args.size(); ++j) {
                         if (args[j] == "-a" || args[j] == "--anagrams" || args[j] == "-o" || args[j] == "--output") {
                             skip1 = true;
-                        }else if(args[j] == "-o" || args[j] == "--output"){
-                                skip1 = true;
-                                //output = args[j+1];
+                        } else if (args[j] == "-o" || args[j] == "--output") {
+                            skip1 = true;
                         } else if (!(args[j].find("--") == 0 || args[j].find('-') == 0) && !skip1) {
                             palindromes.push_back(args[j]);
                             skip_those.push_back(j);
@@ -367,12 +374,13 @@ int main(int argc, char **argv) {
                     break;
                 case str2int("-o"):
                 case str2int("--output"):
-                    //std::cout << "Outputting to the file: " << output << '\n';
                     ++i;
                     break;
                 default:
-                    //help();
-
+                    if (args[i].find('-') == 0 || args[i].find("--") == 0) {
+                        help();
+                        std::cout << "\nInvalid parameter usage, please refer to the help above.\n";
+                    }
                     break;
             }
         } else {
@@ -385,18 +393,6 @@ int main(int argc, char **argv) {
                 case str2int("--file"):
                     file = args[i + 1];
                     ++i;
-                    break;
-                case str2int("-i"):
-                case str2int("--input"):
-                    // TODO 95%
-                    for (std::string line; std::getline(input_file, line);) {
-                        std::stringstream stream(line);
-                        for (std::string word; stream >> word;) {
-                            input.push_back(word);
-                        }
-                    }
-                    args=input;
-                    file=input[1];
                     break;
                 default:
                     help();

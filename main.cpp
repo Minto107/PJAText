@@ -6,12 +6,6 @@
 #include <map>
 #include <algorithm>
 
-/**
- *
- * @param file
- * @param output
- */
-
 void lines_amount(const std::string &file, const std::string &output = "") {
     std::fstream input_file(file);
     int counter = 0;
@@ -296,9 +290,9 @@ int main(int argc, char **argv) {
     std::vector<std::string> palindromes;
     std::vector<int> skip_those;
     std::vector<std::string> input;
-    std::fstream input_file(args[1]);
     for (int i = 0; i < args.size(); ++i) {
         if (args[i] == "-i" || args[i] == "--input") {
+            std::fstream input_file(args[1]);
             for (std::string line; std::getline(input_file, line);) {
                 std::stringstream stream(line);
                 for (std::string word; stream >> word;) {

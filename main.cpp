@@ -288,7 +288,7 @@ int main(int argc, char **argv) {
     std::string output;
     std::vector<std::string> anagrams;
     std::vector<std::string> palindromes;
-    std::vector<int> skip_those;
+    //std::vector<int> skip_those;
     std::vector<std::string> input;
     for (int i = 0; i < args.size(); ++i) {
         if (args[i] == "-i" || args[i] == "--input") {
@@ -304,7 +304,7 @@ int main(int argc, char **argv) {
         }
         if (args[i] == "-o" || args[i] == "--output") {
             output = args[i + 1];
-            skip_those.push_back(i);
+            //skip_those.push_back(i);
         }
     }
     bool skip = false;
@@ -338,7 +338,7 @@ int main(int argc, char **argv) {
                             skip = true;
                         } else if (!(args[j].find("--") == 0 || args[j].find('-') == 0) && !skip) {
                             anagrams.push_back(args[j]);
-                            skip_those.push_back(j);
+                            //skip_those.push_back(j);
                         }
                     }
                     find_anagrams(file, anagrams, output);
@@ -352,7 +352,7 @@ int main(int argc, char **argv) {
                             skip1 = true;
                         } else if (!(args[j].find("--") == 0 || args[j].find('-') == 0) && !skip1) {
                             palindromes.push_back(args[j]);
-                            skip_those.push_back(j);
+                            //skip_those.push_back(j);
                         }
                     }
                     find_palindrome(file, palindromes, output);

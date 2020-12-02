@@ -288,130 +288,129 @@ int main(int argc, char **argv) {
     std::string output;
     std::vector<std::string> anagrams;
     std::vector<std::string> palindromes;
-    //std::vector<int> skip_those;
-    std::vector<std::string> input;
-    for (int i = 0; i < args.size(); ++i) {
-        if (args[i] == "-i" || args[i] == "--input") {
-            std::fstream input_file(args[1]);
-            for (std::string line; std::getline(input_file, line);) {
-                std::stringstream stream(line);
-                for (std::string word; stream >> word;) {
-                    input.push_back(word);
+    std::vector<std::string> skip_those;
+    std::ifstream read_commands("C:\\Users\\minto.MSI-B450TM\\CLionProjects\\PJAText\\help.txt");
+    std::string line_1;
+    if (args.empty()){
+        help();
+    } else {
+        for (std::string line_1; getline(read_commands, line_1);) {
+            std::stringstream stream(line_1);
+            for (std::string word; stream >> word;) {
+                if (word.find('-') == 0 || word.find("--") == 0) {
+                    skip_those.push_back(word);
                 }
-                args = input;
-                i = 1;
             }
         }
-        if (args[i] == "-o" || args[i] == "--output") {
-            output = args[i + 1];
-            //skip_those.push_back(i);
+        std::vector<std::string> input;
+        for (int i = 0; i < args.size(); ++i) {
+            if (args[i] == "-i" || args[i] == "--input") {
+                std::fstream input_file(args[1]);
+                for (std::string line; std::getline(input_file, line);) {
+                    std::stringstream stream(line);
+                    for (std::string word; stream >> word;) {
+                        input.push_back(word);
+                    }
+                    args = input;
+                    i = 1;
+                }
+            }
+            if (args[i] == "-o" || args[i] == "--output") {
+                output = args[i + 1];
+            }
         }
-    }
-    bool skip = false;
-    bool skip1 = false;
+        bool skip = false;
+        bool skip1 = false;
 
-    for (int i = 0; i < args.size(); ++i) {
-        if (i != 0) {
-            switch (str2int(args[i].data())) {
-                case str2int("-n"):
-                case str2int("--newlines"):
-                    lines_amount(file, output);
-                    break;
-                case str2int("-d"):
-                case str2int("--digits"):
-                    digit_amount(file, output);
-                    break;
-                case str2int("-dd"):
-                case str2int("--numbers"):
-                    number_amount(file, output);
-                    break;
-                case str2int("-c"):
-                case str2int("--chars"):
-                    char_amount(file, output);
-                    break;
-                case str2int("-a"):
-                case str2int("--anagrams"):
-                    for (int j = i; j < args.size(); ++j) {
-                        if (args[j] == "-p" || args[j] == "--palindromes") {
-                            skip = true;
-                        } else if (args[j] == "-o" || args[j] == "--output") {
-                            skip = true;
-                        } else if (!(args[j].find("--") == 0 || args[j].find('-') == 0) && !skip) {
-                            anagrams.push_back(args[j]);
-                            //skip_those.push_back(j);
+        for (int i = 0; i < args.size(); ++i) {
+            if (i != 0) {
+                switch (str2int(args[i].data())) {
+                    case str2int("-n"):
+                    case str2int("--newlines"):
+                        lines_amount(file, output);
+                        break;
+                    case str2int("-d"):
+                    case str2int("--digits"):
+                        digit_amount(file, output);
+                        break;
+                    case str2int("-dd"):
+                    case str2int("--numbers"):
+                        number_amount(file, output);
+                        break;
+                    case str2int("-c"):
+                    case str2int("--chars"):
+                        char_amount(file, output);
+                        break;
+                    case str2int("-a"):
+                    case str2int("--anagrams"):
+                        for (int j = i; j < args.size(); ++j) {
+                            if (args[j] == "-p" || args[j] == "--palindromes") {
+                                skip = true;
+                            } else if (args[j] == "-o" || args[j] == "--output") {
+                                skip = true;
+                            } else if (!(args[j].find("--") == 0 || args[j].find('-') == 0) && !skip) {
+                                anagrams.push_back(args[j]);
+                            }
                         }
-                    }
-                    find_anagrams(file, anagrams, output);
-                    break;
-                case str2int("-p"):
-                case str2int("--palindromes"):
-                    for (int j = i; j < args.size(); ++j) {
-                        if (args[j] == "-a" || args[j] == "--anagrams" || args[j] == "-o" || args[j] == "--output") {
-                            skip1 = true;
-                        } else if (args[j] == "-o" || args[j] == "--output") {
-                            skip1 = true;
-                        } else if (!(args[j].find("--") == 0 || args[j].find('-') == 0) && !skip1) {
-                            palindromes.push_back(args[j]);
-                            //skip_those.push_back(j);
+                        i = i + anagrams.size();
+                        find_anagrams(file, anagrams, output);
+                        break;
+                    case str2int("-p"):
+                    case str2int("--palindromes"):
+                        for (int j = i; j < args.size(); ++j) {
+                            if (args[j] == "-a" || args[j] == "--anagrams" || args[j] == "-o" ||
+                                args[j] == "--output") {
+                                skip1 = true;
+                            } else if (args[j] == "-o" || args[j] == "--output") {
+                                skip1 = true;
+                            } else if (!(args[j].find("--") == 0 || args[j].find('-') == 0) && !skip1) {
+                                palindromes.push_back(args[j]);
+                            }
                         }
-                    }
-                    find_palindrome(file, palindromes, output);
-                    break;
-                case str2int("-s"):
-                case str2int("--sorted"):
-                    sort_alphabetically(file, output);
-                    break;
-                case str2int("-rs"):
-                case str2int("--reverse-sorted"):
-                    sort_reverse_alphabetically(file, output);
-                    break;
-                case str2int("-o"):
-                case str2int("--output"):
-                    ++i;
-                    break;
-                default:
-                    if (args[i].find('-') == 0 || args[i].find("--") == 0) {
+                        i = i + palindromes.size();
+                        find_palindrome(file, palindromes, output);
+                        break;
+                    case str2int("-s"):
+                    case str2int("--sorted"):
+                        sort_alphabetically(file, output);
+                        break;
+                    case str2int("-rs"):
+                    case str2int("--reverse-sorted"):
+                        sort_reverse_alphabetically(file, output);
+                        break;
+                    case str2int("-o"):
+                    case str2int("--output"):
+                        ++i;
+                        break;
+                    default:
+                        /*if (args[i].find('-') == 0 || args[i].find("--") == 0) {
+                            help();
+                            std::cout << "\nInvalid parameter usage, please refer to the help above.";
+                        }*/
                         help();
-                        std::cout << "\nInvalid parameter usage, please refer to the help above.\n";
-                    }
-                    break;
-            }
-        } else {
-            switch (str2int(args[i].data())) {
-                case str2int("--help"):
-                case str2int(""):
-                    help();
-                    break;
-                case str2int("-f"):
-                case str2int("--file"):
-                    file = args[i + 1];
-                    ++i;
-                    break;
-                default:
-                    help();
-                    std::cout << "\nInvalid parameter usage, please refer to the help above.\n";
-                    break;
+                        std::cout << "\nParameter " << args[i] << " has not been recognised\n"
+                                                                  "Please refer to the table above.";
+                        break;
+                }
+            } else {
+                switch (str2int(args[i].data())) {
+                    case str2int("--help"):
+                    case str2int(""):
+                        help();
+                        break;
+                    case str2int("-f"):
+                    case str2int("--file"):
+                        file = args[i + 1];
+                        ++i;
+                        break;
+                    default:
+                        help();
+                        std::cout << "\nParameter " << args[i]
+                                  << " has not been recognised or should be provided later\n"
+                                     "You should start with -f or -i.";
+                        break;
+                }
             }
         }
     }
-    /*std::string file = R"(C:\Users\minto.MSI-B450TM\CLionProjects\PJAText\test.txt)";
-    std::string output = R"(C:\Users\minto.MSI-B450TM\CLionProjects\PJAText\output.txt)";
-    std::string clr;
-    lines_amount(file, clr);
-    number_amount(file, clr);
-    digit_amount(file, clr);
-    char_amount(file, clr);
-    std::string anagramExample = "listen";
-    std::vector<std::string> anagram_v;
-    anagram_v.push_back(anagramExample);
-    anagram_v.emplace_back("pap");
-    anagram_v.emplace_back("life");
-    find_anagrams(file, anagram_v, clr);
-    std::string palindrome = "test";
-    std::vector<std::string> palindromes;
-    palindromes.push_back(palindrome);
-    palindromes.emplace_back("there");
-    find_palindrome(file, palindromes, clr);
-    sort_alphabetically(file, clr);
-    sort_reverse_alphabetically(file, clr);*/
 }

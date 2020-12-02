@@ -1,7 +1,6 @@
 ================================================================================
 =                                  PJAText                                     =
 ================================================================================
-
     --help              - opens this file
 -f  --file              - specifies path to the input file
 -n  --newlines          - counts lines in specified file
@@ -9,7 +8,7 @@
 -dd --numbers           - counts numbers in specified file
 -c  --chars             - counts chars in specified file
 -a  --anagrams          - finds anagrams to provided words in specified file
--p  --palindromes        - finds palindromes to provided words in specified file
+-p  --palindromes       - finds palindromes to provided words in specified file
 -s  --sorted            - sorts specified file in alphabetical order
 -rs --reverse-sorted    - sorts specified file in reverse alphabetical order
 -o  --output            - redirects output to a specified file

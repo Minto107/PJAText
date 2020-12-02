@@ -31,7 +31,7 @@ void number_amount(const std::string &file, const std::string &output = "") {
         for (std::string s; stream >> s;) {
             std::string::const_iterator it = s.begin();
             while (it != s.end() && std::isdigit(*it)) ++it;
-            if (!s.empty() && s.find_first_not_of("-0123456789") == std::string::npos) {
+            if (!s.empty() && s.find_first_not_of("-.0123456789") == std::string::npos) {
                 ++counter;
             }
         }

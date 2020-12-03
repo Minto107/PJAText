@@ -197,9 +197,16 @@ find_palindrome(const std::string &file, const std::vector<std::string> &palindr
 }
 
 void sort_alphabetically(const std::string &file, const std::string &output = "") {
-
     std::fstream input_file(file);
     std::vector<std::string> sorted;
+    if (output.empty() || output == " ") {
+        std::cout << "Words in alphabetical order from " << file << " file: ";
+    } else {
+        std::ofstream os;
+        os.open(output, std::ios_base::app);
+        os << "Words in alphabetical order from " << file << " file: ";
+        os.close();
+    }
     for (std::string line; std::getline(input_file, line);) {
         std::stringstream stream(line);
         for (std::string word; stream >> word;) {
@@ -234,9 +241,16 @@ void sort_alphabetically(const std::string &file, const std::string &output = ""
 }
 
 void sort_reverse_alphabetically(const std::string &file, const std::string &output = "") {
-
     std::fstream input_file(file);
     std::vector<std::string> sorted;
+    if (output.empty() || output == " ") {
+        std::cout << "Words in reverse alphabetical order from " << file << " file: ";;
+    } else {
+        std::ofstream os;
+        os.open(output, std::ios_base::app);
+        os << "Words in reverse alphabetical order from " << file << " file: ";;
+        os.close();
+    }
     for (std::string line; std::getline(input_file, line);) {
         std::stringstream stream(line);
         for (std::string word; stream >> word;) {
@@ -383,10 +397,6 @@ int main(int argc, char **argv) {
                         ++i;
                         break;
                     default:
-                        /*if (args[i].find('-') == 0 || args[i].find("--") == 0) {
-                            help();
-                            std::cout << "\nInvalid parameter usage, please refer to the help above.";
-                        }*/
                         help();
                         std::cout << "\nParameter " << args[i] << " has not been recognised\n"
                                                                   "Please refer to the table above.";

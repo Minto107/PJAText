@@ -286,7 +286,7 @@ void sort_reverse_alphabetically(const std::string &file, const std::string &out
 
 void help() {
     std::ifstream input_file(R"(C:\Users\minto.MSI-B450TM\CLionProjects\PJAText\help.txt)");
-    std::string line;
+    //std::string();
     for (std::string line; getline(input_file, line);) {
         std::cout << line << '\n';
     }
@@ -302,20 +302,9 @@ int main(int argc, char **argv) {
     std::string output;
     std::vector<std::string> anagrams;
     std::vector<std::string> palindromes;
-    //std::vector<std::string> skip_those;
-    //std::ifstream read_commands(R"(C:\Users\minto.MSI-B450TM\CLionProjects\PJAText\help.txt)");
-    //std::string line_1;
     if (args.empty()) {
         help();
     } else {
-        /*for (std::string line_1; getline(read_commands, line_1);) {
-            std::stringstream stream(line_1);
-            for (std::string word; stream >> word;) {
-                if (word.find('-') == 0 || word.find("--") == 0) {
-                    skip_those.push_back(word);
-                }
-            }
-        }*/
         std::vector<std::string> input;
         for (int i = 0; i < args.size(); ++i) {
             if (args[i] == "-i" || args[i] == "--input") {
@@ -330,7 +319,12 @@ int main(int argc, char **argv) {
                 }
             }
             if (args[i] == "-o" || args[i] == "--output") {
-                output = args[i + 1];
+                if (!(args[i+1].find("--") == 0 || args[i+1].find('-') == 0)) {
+                    output = args[i + 1];
+                } else {
+                    help();
+                    std::cout << "After -o/--output you need to specify file before using any other options.\n";
+                }
             }
         }
         bool skip = false;

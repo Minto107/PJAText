@@ -81,7 +81,7 @@ void char_amount(const std::string &file, const std::string &output = "") {
             }
         }
         for (std::string word; stream >> word;) {
-            counter = counter + word.size();
+            counter = static_cast<int>(counter + word.size());
         }
     }
     if (output.empty() || output == " ") {
@@ -158,7 +158,7 @@ void find_anagrams(const std::string &file, const std::vector<std::string> &anag
 
 void
 find_palindrome(const std::string &file, const std::vector<std::string> &palindromes, const std::string &output = "") {
-    for (auto palindrome : palindromes) {
+    for (const auto &palindrome : palindromes) {
         std::fstream input_file(file);
         if (output.empty() || output == " ") {
             std::cout << "Palindromes for word " << palindrome << ": ";
@@ -215,9 +215,9 @@ void sort_alphabetically(const std::string &file, const std::string &output = ""
     }
     std::sort(sorted.begin(), sorted.end(), [](std::string x, std::string y) {
         for (auto &ref:x)
-            ref = tolower(ref);
+            ref = static_cast<char>(tolower(ref));
         for (auto &ref:y)
-            ref = tolower(ref);
+            ref = static_cast<char>(tolower(ref));
         return x < y;
     });
     for (const auto &i : sorted) {
@@ -244,11 +244,11 @@ void sort_reverse_alphabetically(const std::string &file, const std::string &out
     std::fstream input_file(file);
     std::vector<std::string> sorted;
     if (output.empty() || output == " ") {
-        std::cout << "Words in reverse alphabetical order from " << file << " file: ";;
+        std::cout << "Words in reverse alphabetical order from " << file << " file: ";
     } else {
         std::ofstream os;
         os.open(output, std::ios_base::app);
-        os << "Words in reverse alphabetical order from " << file << " file: ";;
+        os << "Words in reverse alphabetical order from " << file << " file: ";
         os.close();
     }
     for (std::string line; std::getline(input_file, line);) {
@@ -259,9 +259,9 @@ void sort_reverse_alphabetically(const std::string &file, const std::string &out
     }
     std::sort(sorted.begin(), sorted.end(), [](std::string x, std::string y) {
         for (auto &ref:x)
-            ref = tolower(ref);
+            ref = static_cast<char>(tolower(ref));
         for (auto &ref:y)
-            ref = tolower(ref);
+            ref = static_cast<char>(tolower(ref));
         return x > y;
     });
     for (const auto &i : sorted) {
@@ -285,7 +285,7 @@ void sort_reverse_alphabetically(const std::string &file, const std::string &out
 }
 
 void help() {
-    std::ifstream input_file("C:\\Users\\minto.MSI-B450TM\\CLionProjects\\PJAText\\help.txt");
+    std::ifstream input_file(R"(C:\Users\minto.MSI-B450TM\CLionProjects\PJAText\help.txt)");
     std::string line;
     for (std::string line; getline(input_file, line);) {
         std::cout << line << '\n';
@@ -302,20 +302,20 @@ int main(int argc, char **argv) {
     std::string output;
     std::vector<std::string> anagrams;
     std::vector<std::string> palindromes;
-    std::vector<std::string> skip_those;
-    std::ifstream read_commands("C:\\Users\\minto.MSI-B450TM\\CLionProjects\\PJAText\\help.txt");
-    std::string line_1;
-    if (args.empty()){
+    //std::vector<std::string> skip_those;
+    //std::ifstream read_commands(R"(C:\Users\minto.MSI-B450TM\CLionProjects\PJAText\help.txt)");
+    //std::string line_1;
+    if (args.empty()) {
         help();
     } else {
-        for (std::string line_1; getline(read_commands, line_1);) {
+        /*for (std::string line_1; getline(read_commands, line_1);) {
             std::stringstream stream(line_1);
             for (std::string word; stream >> word;) {
                 if (word.find('-') == 0 || word.find("--") == 0) {
                     skip_those.push_back(word);
                 }
             }
-        }
+        }*/
         std::vector<std::string> input;
         for (int i = 0; i < args.size(); ++i) {
             if (args[i] == "-i" || args[i] == "--input") {
@@ -358,15 +358,14 @@ int main(int argc, char **argv) {
                     case str2int("-a"):
                     case str2int("--anagrams"):
                         for (int j = i; j < args.size(); ++j) {
-                            if (args[j] == "-p" || args[j] == "--palindromes") {
-                                skip = true;
-                            } else if (args[j] == "-o" || args[j] == "--output") {
+                            if (args[j] == "-p" || args[j] == "--palindromes" || args[j] == "-o" ||
+                                args[j] == "--output") {
                                 skip = true;
                             } else if (!(args[j].find("--") == 0 || args[j].find('-') == 0) && !skip) {
                                 anagrams.push_back(args[j]);
                             }
                         }
-                        i = i + anagrams.size();
+                        i = static_cast<int>(i + anagrams.size());
                         find_anagrams(file, anagrams, output);
                         break;
                     case str2int("-p"):
@@ -375,13 +374,11 @@ int main(int argc, char **argv) {
                             if (args[j] == "-a" || args[j] == "--anagrams" || args[j] == "-o" ||
                                 args[j] == "--output") {
                                 skip1 = true;
-                            } else if (args[j] == "-o" || args[j] == "--output") {
-                                skip1 = true;
                             } else if (!(args[j].find("--") == 0 || args[j].find('-') == 0) && !skip1) {
                                 palindromes.push_back(args[j]);
                             }
                         }
-                        i = i + palindromes.size();
+                        i = static_cast<int>(i + palindromes.size());
                         find_palindrome(file, palindromes, output);
                         break;
                     case str2int("-s"):

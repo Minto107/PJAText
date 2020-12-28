@@ -1,10 +1,15 @@
 #include <iostream>
-#include <string>
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <map>
 #include <algorithm>
+
+/**
+ * lines_amount counts amount of lines in @param file
+ * @param file specifies the file that will be read
+ * @param output (optional) specifies file that result will be written to
+ */
 
 void lines_amount(const std::string &file, const std::string &output = "") {
     std::fstream input_file(file);
@@ -22,6 +27,12 @@ void lines_amount(const std::string &file, const std::string &output = "") {
         os.close();
     }
 }
+
+/**
+ * number_amount counts numbers in @param file
+ * @param file specifies the file that will be read
+ * @param output (optional) specifies file that result will be written to
+ */
 
 void number_amount(const std::string &file, const std::string &output = "") {
     std::fstream input_file(file);
@@ -45,6 +56,12 @@ void number_amount(const std::string &file, const std::string &output = "") {
         os.close();
     }
 }
+
+/**
+ * digit_amount counts digit in @param file
+ * @param file specifies the file that will be read
+ * @param output (optional) specifies file that result will be written to
+ */
 
 void digit_amount(const std::string &file, const std::string &output = "") {
     std::fstream input_file(file);
@@ -70,6 +87,12 @@ void digit_amount(const std::string &file, const std::string &output = "") {
 
 }
 
+/**
+ * char_amount counts every single character in @param file including whitespaces
+ * @param file specifies the file that will be read
+ * @param output (optional) specifies file that result will be written to
+ */
+
 void char_amount(const std::string &file, const std::string &output = "") {
     std::fstream input_file(file);
     int counter = 0;
@@ -93,6 +116,13 @@ void char_amount(const std::string &file, const std::string &output = "") {
         os.close();
     }
 }
+
+/**
+ * find_anagrams finds anagrams specified by @param anagrams_to_find in @param file
+ * @param file specifies the file that will be read
+ * @param anagrams_to_find vector containing std::string, vector contents will be checked if anagrams for these words exist
+ * @param output (optional) specifies file that result will be written to
+ */
 
 void find_anagrams(const std::string &file, const std::vector<std::string> &anagrams_to_find,
                    const std::string &output = "") {
@@ -156,6 +186,13 @@ void find_anagrams(const std::string &file, const std::vector<std::string> &anag
     }
 }
 
+/**
+ * find_palindrome finds palindromes specified by @param palindromes in @param file
+ * @param file specifies the file that will be read
+ * @param palindromes vector containing std::string, vector contents will be checked if palindromes for these words exist
+ * @param output (optional) specifies file that result will be written to
+ */
+
 void
 find_palindrome(const std::string &file, const std::vector<std::string> &palindromes, const std::string &output = "") {
     for (const auto &palindrome : palindromes) {
@@ -195,6 +232,12 @@ find_palindrome(const std::string &file, const std::vector<std::string> &palindr
         }
     }
 }
+
+/**
+ * @brief Function sorts @param file in alphabetical order
+ * @param file specifies the file that will be read
+ * @param output (optional) specifies file that result will be written to
+ */
 
 void sort_alphabetically(const std::string &file, const std::string &output = "") {
     std::fstream input_file(file);
@@ -240,6 +283,12 @@ void sort_alphabetically(const std::string &file, const std::string &output = ""
     }
 }
 
+/**
+ * @brief Function sorts @param file in reverse alphabetical order
+ * @param file specifies the file that will be read
+ * @param output (optional) specifies file that result will be written to
+ */
+
 void sort_reverse_alphabetically(const std::string &file, const std::string &output = "") {
     std::fstream input_file(file);
     std::vector<std::string> sorted;
@@ -284,17 +333,45 @@ void sort_reverse_alphabetically(const std::string &file, const std::string &out
     }
 }
 
+/**
+ * @brief displays help
+ */
+
 void help() {
     std::ifstream input_file(R"(C:\Users\minto.MSI-B450TM\CLionProjects\PJAText\help.txt)");
-    //std::string();
     for (std::string line; getline(input_file, line);) {
         std::cout << line << '\n';
     }
 }
 
+/**
+ * @brief Function converts str from std::string and returns it as an Integer value
+ * @param str std::string that needs to be converted into an Integer value
+ * @param h defaults to 0
+ * @return Returns std::string as Integer value
+ */
+
 constexpr unsigned int str2int(const char *str, int h = 0) {
     return !str[h] ? 5381 : (str2int(str, h + 1) * 33) ^ str[h];
 }
+
+/**
+ * @brief Function that handles writing std::string to specified output file
+ * @param s std::string to be written to the output file
+ * @param output std::string containing file path to the output file
+ */
+
+void print_to_file(const std::string& s, const std::string &output){
+    std::ofstream os;
+    os.open(output, std::ios_base::app);
+    os << s;
+    os.close();
+}
+
+/**
+ * @brief Handles flags and parses parameters
+ * @return Returns execution status code. 0 = execution was successful
+ */
 
 int main(int argc, char **argv) {
     std::vector<std::string> args(argv + 1, argv + argc);
@@ -304,6 +381,8 @@ int main(int argc, char **argv) {
     std::vector<std::string> palindromes;
     if (args.empty()) {
         help();
+        std::cout << "This Windows program can not be run without launch flags."
+                     "\nPlease refer to the help above.";
     } else {
         std::vector<std::string> input;
         for (int i = 0; i < args.size(); ++i) {
@@ -408,7 +487,7 @@ int main(int argc, char **argv) {
                         help();
                         std::cout << "\nParameter " << args[i]
                                   << " has not been recognised or should be provided later\n"
-                                     "You should start with -f or -i.";
+                                     "You should start with -f/--file or -i/--input.";
                         break;
                 }
             }

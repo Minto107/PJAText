@@ -6,7 +6,20 @@
 #include <algorithm>
 
 /**
- * lines_amount counts amount of lines in @param file
+ * @brief Function that handles writing std::string to specified output file
+ * @param s std::string to be written to the output file
+ * @param output std::string containing file path to the output file
+ */
+
+void print_to_file(const std::string &s, const std::string &output) {
+    std::ofstream os;
+    os.open(output, std::ios_base::app);
+    os << s;
+    os.close();
+}
+
+/**
+ * @brief Function that counts amount of lines in file
  * @param file specifies the file that will be read
  * @param output (optional) specifies file that result will be written to
  */
@@ -21,6 +34,7 @@ void lines_amount(const std::string &file, const std::string &output = "") {
     if (output.empty() || output == " ") {
         std::cout << "Amount of lines in specified file: " << counter << '\n';
     } else {
+//        print_to_file(&"Amount of lines in specified file: " [ counter] + '\n', output);
         std::ofstream os;
         os.open(output, std::ios_base::app);
         os << "Amount of lines in specified file: " << counter << '\n';
@@ -29,7 +43,7 @@ void lines_amount(const std::string &file, const std::string &output = "") {
 }
 
 /**
- * number_amount counts numbers in @param file
+ * @brief Function counts numbers in file
  * @param file specifies the file that will be read
  * @param output (optional) specifies file that result will be written to
  */
@@ -58,7 +72,7 @@ void number_amount(const std::string &file, const std::string &output = "") {
 }
 
 /**
- * digit_amount counts digit in @param file
+ * Function counts digit in file
  * @param file specifies the file that will be read
  * @param output (optional) specifies file that result will be written to
  */
@@ -88,7 +102,7 @@ void digit_amount(const std::string &file, const std::string &output = "") {
 }
 
 /**
- * char_amount counts every single character in @param file including whitespaces
+ * Function counts every single character in file including whitespaces
  * @param file specifies the file that will be read
  * @param output (optional) specifies file that result will be written to
  */
@@ -118,7 +132,7 @@ void char_amount(const std::string &file, const std::string &output = "") {
 }
 
 /**
- * find_anagrams finds anagrams specified by @param anagrams_to_find in @param file
+ * Function finds anagrams specified by anagrams_to_find in file
  * @param file specifies the file that will be read
  * @param anagrams_to_find vector containing std::string, vector contents will be checked if anagrams for these words exist
  * @param output (optional) specifies file that result will be written to
@@ -127,10 +141,6 @@ void char_amount(const std::string &file, const std::string &output = "") {
 void find_anagrams(const std::string &file, const std::vector<std::string> &anagrams_to_find,
                    const std::string &output = "") {
     for (const auto &anagram_to_find : anagrams_to_find) {
-        std::map<char, int> occurrences_in_anagrams_to_find;
-        for (auto c : anagram_to_find) {
-            occurrences_in_anagrams_to_find[c] += 1;
-        }
         if (output.empty() || output == " ") {
             std::cout << "Anagrams for word " << anagram_to_find << ": ";
         } else {
@@ -138,6 +148,10 @@ void find_anagrams(const std::string &file, const std::vector<std::string> &anag
             os.open(output, std::ios_base::app);
             os << "Anagrams for word " << anagram_to_find << ": ";
             os.close();
+        }
+        std::map<char, int> occurrences_in_anagrams_to_find;
+        for (auto c : anagram_to_find) {
+            occurrences_in_anagrams_to_find[c] += 1;
         }
         std::fstream input_file(file);
         for (std::string line; std::getline(input_file, line);) {
@@ -187,7 +201,7 @@ void find_anagrams(const std::string &file, const std::vector<std::string> &anag
 }
 
 /**
- * find_palindrome finds palindromes specified by @param palindromes in @param file
+ * Function finds palindromes specified by palindromes in file
  * @param file specifies the file that will be read
  * @param palindromes vector containing std::string, vector contents will be checked if palindromes for these words exist
  * @param output (optional) specifies file that result will be written to
@@ -234,7 +248,7 @@ find_palindrome(const std::string &file, const std::vector<std::string> &palindr
 }
 
 /**
- * @brief Function sorts @param file in alphabetical order
+ * @brief Function sorts file in alphabetical order
  * @param file specifies the file that will be read
  * @param output (optional) specifies file that result will be written to
  */
@@ -284,7 +298,7 @@ void sort_alphabetically(const std::string &file, const std::string &output = ""
 }
 
 /**
- * @brief Function sorts @param file in reverse alphabetical order
+ * @brief Function sorts file in reverse alphabetical order
  * @param file specifies the file that will be read
  * @param output (optional) specifies file that result will be written to
  */
@@ -356,19 +370,6 @@ constexpr unsigned int str2int(const char *str, int h = 0) {
 }
 
 /**
- * @brief Function that handles writing std::string to specified output file
- * @param s std::string to be written to the output file
- * @param output std::string containing file path to the output file
- */
-
-void print_to_file(const std::string& s, const std::string &output){
-    std::ofstream os;
-    os.open(output, std::ios_base::app);
-    os << s;
-    os.close();
-}
-
-/**
  * @brief Handles flags and parses parameters
  * @return Returns execution status code. 0 = execution was successful
  */
@@ -387,14 +388,16 @@ int main(int argc, char **argv) {
         std::vector<std::string> input;
         for (int i = 0; i < args.size(); ++i) {
             if (args[i] == "-i" || args[i] == "--input") {
-                std::fstream input_file(args[1]);
-                for (std::string line; std::getline(input_file, line);) {
-                    std::stringstream stream(line);
-                    for (std::string word; stream >> word;) {
-                        input.push_back(word);
+                if (std::ifstream(args[1]).good()) {
+                    std::fstream input_file(args[1]);
+                    for (std::string line; std::getline(input_file, line);) {
+                        std::stringstream stream(line);
+                        for (std::string word; stream >> word;) {
+                            input.push_back(word);
+                        }
+                        args = input;
+                        i = 1;
                     }
-                    args = input;
-                    i = 1;
                 }
             }
             if (args[i] == "-o" || args[i] == "--output") {
@@ -407,8 +410,6 @@ int main(int argc, char **argv) {
             }
         }
         bool skip = false;
-        bool skip1 = false;
-
         for (int i = 0; i < args.size(); ++i) {
             if (i != 0) {
                 switch (str2int(args[i].data())) {
@@ -440,19 +441,21 @@ int main(int argc, char **argv) {
                         }
                         i = static_cast<int>(i + anagrams.size());
                         find_anagrams(file, anagrams, output);
+                        return 0;
                         break;
                     case str2int("-p"):
                     case str2int("--palindromes"):
                         for (int j = i; j < args.size(); ++j) {
                             if (args[j] == "-a" || args[j] == "--anagrams" || args[j] == "-o" ||
                                 args[j] == "--output") {
-                                skip1 = true;
-                            } else if (!(args[j].find("--") == 0 || args[j].find('-') == 0) && !skip1) {
+                                skip = true;
+                            } else if (!(args[j].find("--") == 0 || args[j].find('-') == 0) && !skip) {
                                 palindromes.push_back(args[j]);
                             }
                         }
                         i = static_cast<int>(i + palindromes.size());
                         find_palindrome(file, palindromes, output);
+                        return 0;
                         break;
                     case str2int("-s"):
                     case str2int("--sorted"):
@@ -469,7 +472,7 @@ int main(int argc, char **argv) {
                     default:
                         help();
                         std::cout << "\nParameter " << args[i] << " has not been recognised\n"
-                                                                  "Please refer to the table above.";
+                                                                  "Please refer to the help table above.";
                         break;
                 }
             } else {
@@ -480,8 +483,14 @@ int main(int argc, char **argv) {
                         break;
                     case str2int("-f"):
                     case str2int("--file"):
-                        file = args[i + 1];
-                        ++i;
+                        if (std::ifstream(args[i + 1]).good()) {
+                            file = args[i + 1];
+                            ++i;
+                        } else {
+                            std::cout << "Cannot find the file in specified path.\n"
+                                         "Check if file path is correct and try again.";
+                            return -1;
+                        }
                         break;
                     default:
                         help();

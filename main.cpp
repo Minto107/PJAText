@@ -1,21 +1,30 @@
 #include <iostream>
+#include <string>
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <regex>
 
-/**
- * @brief Function that handles writing std::string to specified output file
- * @param s std::string to be written to the output file
- * @param output std::string containing file path to the output file
- */
+std::vector<std::string> insert_words_from_file_to_vector(const std::string &file) {
+    std::vector<std::string> sorted;
+    std::fstream input_file(file);
+    for (std::string line; std::getline(input_file, line);) {
+        std::stringstream stream(line);
+        for (std::string word; stream >> word;) {
+            sorted.push_back(word);
+        }
+    }
+    return sorted;
+}
 
-void print_to_file(const std::string &s, const std::string &output) {
-    std::ofstream os;
-    os.open(output, std::ios_base::app);
-    os << s;
-    os.close();
+template<typename T>
+void print_vector(const std::vector<T> &vec) {
+    for (const auto &i : vec) {
+        std::cout << i << ' ';
+    }
+    std::cout << '\n';
 }
 
 /**
@@ -34,7 +43,6 @@ void lines_amount(const std::string &file, const std::string &output = "") {
     if (output.empty() || output == " ") {
         std::cout << "Amount of lines in specified file: " << counter << '\n';
     } else {
-//        print_to_file(&"Amount of lines in specified file: " [ counter] + '\n', output);
         std::ofstream os;
         os.open(output, std::ios_base::app);
         os << "Amount of lines in specified file: " << counter << '\n';
@@ -50,13 +58,20 @@ void lines_amount(const std::string &file, const std::string &output = "") {
 
 void number_amount(const std::string &file, const std::string &output = "") {
     std::fstream input_file(file);
+    std::regex expr("^[-]?[\\s]?[0-9]*[.]?[0-9]*$");
     int counter = 0;
     for (std::string line; std::getline(input_file, line);) {
         std::stringstream stream(line);
         for (std::string s; stream >> s;) {
-            std::string::const_iterator it = s.begin();
+            /*std::string::const_iterator it = s.begin();
             while (it != s.end() && std::isdigit(*it)) ++it;
             if (!s.empty() && s.find_first_not_of("-.0123456789") == std::string::npos) {
+                ++counter;
+            }*/
+            if (std::regex_match(s, expr)) {
+                if (s == "-") {
+                    --counter;
+                }
                 ++counter;
             }
         }
@@ -118,7 +133,7 @@ void char_amount(const std::string &file, const std::string &output = "") {
             }
         }
         for (std::string word; stream >> word;) {
-            counter = static_cast<int>(counter + word.size());
+            counter += word.size();
         }
     }
     if (output.empty() || output == " ") {
@@ -162,8 +177,8 @@ void find_anagrams(const std::string &file, const std::vector<std::string> &anag
                     occurrences[c] += 1;
                 }
                 std::string tmp;
-                std::vector<std::string> first;
                 std::string tmp1;
+                std::vector<std::string> first;
                 std::vector<std::string> second;
                 for (auto[key, value] : occurrences_in_anagrams_to_find) {
                     std::ostringstream oss;
@@ -254,8 +269,7 @@ find_palindrome(const std::string &file, const std::vector<std::string> &palindr
  */
 
 void sort_alphabetically(const std::string &file, const std::string &output = "") {
-    std::fstream input_file(file);
-    std::vector<std::string> sorted;
+    auto sorted = insert_words_from_file_to_vector(file);
     if (output.empty() || output == " ") {
         std::cout << "Words in alphabetical order from " << file << " file: ";
     } else {
@@ -264,12 +278,6 @@ void sort_alphabetically(const std::string &file, const std::string &output = ""
         os << "Words in alphabetical order from " << file << " file: ";
         os.close();
     }
-    for (std::string line; std::getline(input_file, line);) {
-        std::stringstream stream(line);
-        for (std::string word; stream >> word;) {
-            sorted.push_back(word);
-        }
-    }
     std::sort(sorted.begin(), sorted.end(), [](std::string x, std::string y) {
         for (auto &ref:x)
             ref = static_cast<char>(tolower(ref));
@@ -277,23 +285,19 @@ void sort_alphabetically(const std::string &file, const std::string &output = ""
             ref = static_cast<char>(tolower(ref));
         return x < y;
     });
-    for (const auto &i : sorted) {
-        if (output.empty() || output == " ") {
-            std::cout << i << ' ';
-        } else {
+    if (!(output.empty() || output == " ")) {
+        for (const auto &i : sorted) {
             std::ofstream os;
             os.open(output, std::ios_base::app);
             os << i << ' ';
             os.close();
         }
-    }
-    if (output.empty() || output == " ") {
-        std::cout << '\n';
-    } else {
         std::ofstream os;
         os.open(output, std::ios_base::app);
         os << '\n';
         os.close();
+    } else {
+        print_vector(sorted);
     }
 }
 
@@ -304,8 +308,7 @@ void sort_alphabetically(const std::string &file, const std::string &output = ""
  */
 
 void sort_reverse_alphabetically(const std::string &file, const std::string &output = "") {
-    std::fstream input_file(file);
-    std::vector<std::string> sorted;
+    auto sorted = insert_words_from_file_to_vector(file);
     if (output.empty() || output == " ") {
         std::cout << "Words in reverse alphabetical order from " << file << " file: ";
     } else {
@@ -314,12 +317,6 @@ void sort_reverse_alphabetically(const std::string &file, const std::string &out
         os << "Words in reverse alphabetical order from " << file << " file: ";
         os.close();
     }
-    for (std::string line; std::getline(input_file, line);) {
-        std::stringstream stream(line);
-        for (std::string word; stream >> word;) {
-            sorted.push_back(word);
-        }
-    }
     std::sort(sorted.begin(), sorted.end(), [](std::string x, std::string y) {
         for (auto &ref:x)
             ref = static_cast<char>(tolower(ref));
@@ -327,23 +324,19 @@ void sort_reverse_alphabetically(const std::string &file, const std::string &out
             ref = static_cast<char>(tolower(ref));
         return x > y;
     });
-    for (const auto &i : sorted) {
-        if (output.empty() || output == " ") {
-            std::cout << i << ' ';
-        } else {
+    if (!(output.empty() || output == " ")) {
+        for (const auto &i : sorted) {
             std::ofstream os;
             os.open(output, std::ios_base::app);
             os << i << ' ';
             os.close();
         }
-    }
-    if (output.empty() || output == " ") {
-        std::cout << '\n';
-    } else {
         std::ofstream os;
         os.open(output, std::ios_base::app);
         os << '\n';
         os.close();
+    } else {
+        print_vector(sorted);
     }
 }
 
@@ -371,7 +364,7 @@ constexpr unsigned int str2int(const char *str, int h = 0) {
 
 /**
  * @brief Handles flags and parses parameters
- * @return Returns execution status code. 0 = execution was successful
+ * @return Returns execution status code. 0 = execution was successful, -1 = means wrong or no flag were provided.
  */
 
 int main(int argc, char **argv) {
@@ -382,30 +375,37 @@ int main(int argc, char **argv) {
     std::vector<std::string> palindromes;
     if (args.empty()) {
         help();
-        std::cout << "This Windows program can not be run without launch flags."
-                     "\nPlease refer to the help above.";
+        std::cout << "\nThis Windows program can not be run without launch flags.\n"
+                     "Please refer to the help above.\n";
     } else {
         std::vector<std::string> input;
         for (int i = 0; i < args.size(); ++i) {
             if (args[i] == "-i" || args[i] == "--input") {
-                if (std::ifstream(args[1]).good()) {
-                    std::fstream input_file(args[1]);
-                    for (std::string line; std::getline(input_file, line);) {
-                        std::stringstream stream(line);
-                        for (std::string word; stream >> word;) {
-                            input.push_back(word);
+                if (args[0] == "-i" || args[0] == "--input") {
+                    if (std::ifstream(args[1]).good()) {
+                        std::fstream input_file(args[1]);
+                        for (std::string line; std::getline(input_file, line);) {
+                            std::stringstream stream(line);
+                            for (std::string word; stream >> word;) {
+                                input.push_back(word);
+                            }
+                            args = input;
+                            i = 1;
                         }
-                        args = input;
-                        i = 1;
                     }
+                } else {
+                    help();
+                    std::cout << "\nParameter " << args[i] << " should be the only one provided.\n"
+                                                              "Please refer to the help table above.\n";
+                    return 0;
                 }
             }
             if (args[i] == "-o" || args[i] == "--output") {
-                if (!(args[i+1].find("--") == 0 || args[i+1].find('-') == 0)) {
+                if (!(args[i + 1].find("--") == 0 || args[i + 1].find('-') == 0)) {
                     output = args[i + 1];
                 } else {
                     help();
-                    std::cout << "After -o/--output you need to specify file before using any other options.\n";
+                    std::cout << "\nAfter " << args[i] << " you need to specify file before using any other options.\n";
                 }
             }
         }
@@ -439,10 +439,8 @@ int main(int argc, char **argv) {
                                 anagrams.push_back(args[j]);
                             }
                         }
-                        i = static_cast<int>(i + anagrams.size());
                         find_anagrams(file, anagrams, output);
                         return 0;
-                        break;
                     case str2int("-p"):
                     case str2int("--palindromes"):
                         for (int j = i; j < args.size(); ++j) {
@@ -453,10 +451,8 @@ int main(int argc, char **argv) {
                                 palindromes.push_back(args[j]);
                             }
                         }
-                        i = static_cast<int>(i + palindromes.size());
                         find_palindrome(file, palindromes, output);
                         return 0;
-                        break;
                     case str2int("-s"):
                     case str2int("--sorted"):
                         sort_alphabetically(file, output);
@@ -471,9 +467,14 @@ int main(int argc, char **argv) {
                         break;
                     default:
                         help();
-                        std::cout << "\nParameter " << args[i] << " has not been recognised\n"
-                                                                  "Please refer to the help table above.";
-                        break;
+                        if (!(args[i] == "-i" || args[i] == "--input")) {
+                            std::cout << "\nParameter " << args[i] << " has not been recognised\n"
+                                                                      "Please refer to the help table above.\n";
+                        } else {
+                            std::cout << "\nParameter " << args[i] << " should be the only one provided.\n"
+                                                                      "Please refer to the help table above.\n";
+                        }
+                        return -1;
                 }
             } else {
                 switch (str2int(args[i].data())) {
@@ -487,8 +488,8 @@ int main(int argc, char **argv) {
                             file = args[i + 1];
                             ++i;
                         } else {
-                            std::cout << "Cannot find the file in specified path.\n"
-                                         "Check if file path is correct and try again.";
+                            std::cout << "\nCannot find the file in specified path.\n"
+                                         "Check if file path is correct and try again.\n";
                             return -1;
                         }
                         break;
@@ -496,10 +497,11 @@ int main(int argc, char **argv) {
                         help();
                         std::cout << "\nParameter " << args[i]
                                   << " has not been recognised or should be provided later\n"
-                                     "You should start with -f/--file or -i/--input.";
-                        break;
+                                     "You should start with -f/--file or -i/--input.\n";
+                        return -1;
                 }
             }
         }
     }
+    return 0;
 }

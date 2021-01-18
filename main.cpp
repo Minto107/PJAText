@@ -8,9 +8,9 @@
 #include <regex>
 
 /**
- * @brief Template to print a vector of any type.
- * @tparam T Type of the vector to be printed.
- * @param vec Vector to be printed.
+ * @brief Template to print an std::vector of any type.
+ * @tparam T Type of the std::vector to be printed.
+ * @param vec std::vector to be printed.
  */
 
 template<typename T>
@@ -57,7 +57,7 @@ std::vector<std::string> insert_words_from_file_to_vector(const std::string &fil
 }
 
 /**
- * @brief Function that counts amount of lines in file.
+ * @brief Function that counts amount of lines in a file.
  * @param file specifies the file that will be read.
  * @param output (optional) specifies file that result will be written to.
  */
@@ -80,7 +80,7 @@ void lines_amount(const std::string &file, const std::string &output = "") {
 }
 
 /**
- * @brief Function counts numbers in file
+ * @brief Function counts numbers in a file
  * @param file specifies the file that will be read
  * @param output (optional) specifies file that result will be written to
  */
@@ -111,7 +111,7 @@ void number_amount(const std::string &file, const std::string &output = "") {
 }
 
 /**
- * Function counts digit in file
+ * Function counts digit in a file
  * @param file specifies the file that will be read
  * @param output (optional) specifies file that result will be written to
  */
@@ -141,7 +141,7 @@ void digit_amount(const std::string &file, const std::string &output = "") {
 }
 
 /**
- * Function counts every single character in file including whitespaces
+ * Function counts every character in a file including whitespaces
  * @param file specifies the file that will be read
  * @param output (optional) specifies file that result will be written to
  */
@@ -172,8 +172,8 @@ void char_amount(const std::string &file, const std::string &output = "") {
 
 /**
  * @brief Function converts std::map to std::vector.
- * @param my_map Map to convert.
- * @return Returns map converted to vector.
+ * @param my_map std::map to convert.
+ * @return Returns std::map converted to std::vector.
  */
 
 std::vector<std::string> analyze_word(const std::map<char, int> &my_map) {
@@ -368,12 +368,12 @@ void help() {
 /**
  * @brief Function converts str from std::string and returns it as an Integer value
  * @param str std::string that needs to be converted into an Integer value
- * @param h defaults to 0
+ * @param offset defaults to 0
  * @return Returns std::string as Integer value
  */
 
-constexpr unsigned int str2int(const char *str, int h = 0) {
-    return !str[h] ? 5381 : (str2int(str, h + 1) * 33) ^ str[h];
+constexpr unsigned int string_to_int(const char *str, int offset = 0) {
+    return str[offset] ? (string_to_int(str, offset + 1) * 33) ^ str[offset] : 5381;
 }
 
 /**
@@ -391,12 +391,13 @@ int main(int argc, char **argv) {
         std::cout << "\nThis application cannot be run without launch flags.\n"
                      "Please refer to the help above.\n";
         return -1;
-    } else {
-        std::vector<std::string> input;
-        for (int i = 0; i < args.size(); ++i) {
-            if (args[i] == "-i" || args[i] == "--input") {
-                if (args[0] == "-i" || args[0] == "--input") {
-                    if (std::ifstream(args[1]).good()) {
+    }
+    std::vector<std::string> input;
+    for (int i = 0; i < args.size(); ++i) {
+        if (args[i] == "-i" || args[i] == "--input") {
+            if (args[0] == "-i" || args[0] == "--input") {
+                if (std::ifstream(args[1]).good()) {
+                    if (std::regex_match(args[1], std::regex("^[\\d\\w]+[.]txt$"))) {
                         std::fstream input_file(args[1]);
                         for (std::string line; std::getline(input_file, line);) {
                             std::stringstream stream(line);
@@ -406,115 +407,123 @@ int main(int argc, char **argv) {
                             args = input;
                             i = 1;
                         }
-                    }
-                } else {
-                    help();
-                    std::cout << "\nParameter " << args[i] << " should be the only one provided.\n"
-                                                              "Please refer to the help table above.\n";
-                    return 0;
-                }
-            }
-            if (args[i] == "-o" || args[i] == "--output") {
-                if (!(args[i + 1].find("--") == 0 || args[i + 1].find('-') == 0)) {
-                    output = args[i + 1];
-                } else {
-                    help();
-                    std::cout << "\nAfter " << args[i] << " you need to specify file before using any other options.\n";
-                    return -1;
-                }
-            }
-        }
-        bool skip = false;
-        for (int i = 0; i < args.size(); ++i) {
-            if (i != 0) {
-                switch (str2int(args[i].data())) {
-                    case str2int("-n"):
-                    case str2int("--newlines"):
-                        lines_amount(file, output);
-                        break;
-                    case str2int("-d"):
-                    case str2int("--digits"):
-                        digit_amount(file, output);
-                        break;
-                    case str2int("-dd"):
-                    case str2int("--numbers"):
-                        number_amount(file, output);
-                        break;
-                    case str2int("-c"):
-                    case str2int("--chars"):
-                        char_amount(file, output);
-                        break;
-                    case str2int("-a"):
-                    case str2int("--words_to_find"):
-                        for (int j = i; j < args.size(); ++j) {
-                            if (args[j] == "-p" || args[j] == "--palindromes" || args[j] == "-o" ||
-                                args[j] == "--output") {
-                                skip = true;
-                            } else if (!(args[j].find("--") == 0 || args[j].find('-') == 0) && !skip) {
-                                words_to_find.push_back(args[j]);
-                            }
-                        }
-                        find_anagrams(file, words_to_find, output);
-                        return 0;
-                    case str2int("-p"):
-                    case str2int("--palindromes"):
-                        for (int j = i; j < args.size(); ++j) {
-                            if (args[j] == "-a" || args[j] == "--words_to_find" || args[j] == "-o" ||
-                                args[j] == "--output") {
-                                skip = true;
-                            } else if (!(args[j].find("--") == 0 || args[j].find('-') == 0) && !skip) {
-                                words_to_find.push_back(args[j]);
-                            }
-                        }
-                        find_palindrome(file, words_to_find, output);
-                        return 0;
-                    case str2int("-s"):
-                    case str2int("--sorted"):
-                        sort_alphabetically(file, output);
-                        break;
-                    case str2int("-rs"):
-                    case str2int("--reverse-sorted"):
-                        sort_reverse_alphabetically(file, output);
-                        break;
-                    case str2int("-o"):
-                    case str2int("--output"):
-                        ++i;
-                        break;
-                    default:
-                        help();
-                        if (!(args[i] == "-i" || args[i] == "--input")) {
-                            std::cout << "\nParameter " << args[i] << " has not been recognised\n"
-                                                                      "Please refer to the help above.\n";
-                        } else {
-                            std::cout << "\nParameter " << args[i] << " should be the only one provided.\n"
-                                                                      "Please refer to the help above.\n";
-                        }
+                    } else {
+                        std::cout << "Input file needs to have .txt extension.\n";
                         return -1;
+                    }
                 }
             } else {
-                switch (str2int(args[i].data())) {
-                    case str2int("--help"):
-                    case str2int(""):
-                        help();
-                        break;
-                    case str2int("-f"):
-                    case str2int("--file"):
-                        if (std::ifstream(args[i + 1]).good()) {
+                help();
+                std::cout << "\nParameter " << args[i] << " should be the only one provided.\n"
+                                                          "Please refer to the help table above.\n";
+                return 0;
+            }
+        }
+        if (args[i] == "-o" || args[i] == "--output") {
+            if (!(args[i + 1].find("--") == 0 || args[i + 1].find('-') == 0)) {
+                output = args[i + 1];
+            } else {
+                help();
+                std::cout << "\nAfter " << args[i] << " you need to specify file before using any other options.\n";
+                return -1;
+            }
+        }
+    }
+    bool skip = false;
+    for (int i = 0; i < args.size(); ++i) {
+        if (i != 0) {
+            switch (string_to_int(args[i].data())) {
+                case string_to_int("-n"):
+                case string_to_int("--newlines"):
+                    lines_amount(file, output);
+                    break;
+                case string_to_int("-d"):
+                case string_to_int("--digits"):
+                    digit_amount(file, output);
+                    break;
+                case string_to_int("-dd"):
+                case string_to_int("--numbers"):
+                    number_amount(file, output);
+                    break;
+                case string_to_int("-c"):
+                case string_to_int("--chars"):
+                    char_amount(file, output);
+                    break;
+                case string_to_int("-a"):
+                case string_to_int("--words_to_find"):
+                    for (int j = i; j < args.size(); ++j) {
+                        if (args[j] == "-p" || args[j] == "--palindromes" || args[j] == "-o" ||
+                            args[j] == "--output") {
+                            skip = true;
+                        } else if (!(args[j].find("--") == 0 || args[j].find('-') == 0) && !skip) {
+                            words_to_find.push_back(args[j]);
+                        }
+                    }
+                    find_anagrams(file, words_to_find, output);
+                    return 0;
+                case string_to_int("-p"):
+                case string_to_int("--palindromes"):
+                    for (int j = i; j < args.size(); ++j) {
+                        if (args[j] == "-a" || args[j] == "--words_to_find" || args[j] == "-o" ||
+                            args[j] == "--output") {
+                            skip = true;
+                        } else if (!(args[j].find("--") == 0 || args[j].find('-') == 0) && !skip) {
+                            words_to_find.push_back(args[j]);
+                        }
+                    }
+                    find_palindrome(file, words_to_find, output);
+                    return 0;
+                case string_to_int("-s"):
+                case string_to_int("--sorted"):
+                    sort_alphabetically(file, output);
+                    break;
+                case string_to_int("-rs"):
+                case string_to_int("--reverse-sorted"):
+                    sort_reverse_alphabetically(file, output);
+                    break;
+                case string_to_int("-o"):
+                case string_to_int("--output"):
+                    ++i;
+                    break;
+                default:
+                    help();
+                    if (!(args[i] == "-i" || args[i] == "--input")) {
+                        std::cout << "\nParameter " << args[i] << " has not been recognised\n"
+                                                                  "Please refer to the help above.\n";
+                    } else {
+                        std::cout << "\nParameter " << args[i] << " should be the only one provided.\n"
+                                                                  "Please refer to the help above.\n";
+                    }
+                    return -1;
+            }
+        } else {
+            switch (string_to_int(args[i].data())) {
+                case string_to_int("--help"):
+                case string_to_int(""):
+                    help();
+                    return 0;
+                case string_to_int("-f"):
+                case string_to_int("--file"):
+                    if (std::ifstream(args[i + 1]).good()) {
+                        if (std::regex_match(args[i + 1], std::regex("^[\\d\\w]+[.]txt$"))) {
                             file = args[i + 1];
                             ++i;
                         } else {
-                            std::cout << "\nCannot find the file in specified path.\n"
-                                         "Check if file path is correct and try again.\n";
+                            std::cout << "File to be analyzed needs to have .txt extension.\n";
                             return -1;
                         }
-                        break;
-                    default:
-                        help();
-                        std::cout << "\nParameter " << args[i]
-                                  << " has not been recognised or should be provided later\n"
-                                     "You should start with -f/--file or -i/--input.\n";
+                    } else {
+                        std::cout << "\nCannot find the file in specified path.\n"
+                                     "Check if file path is correct and try again.\n";
                         return -1;
-                }
+                    }
+                    break;
+                default:
+                    help();
+                    std::cout << "\nParameter " << args[i]
+                              << " has not been recognised or should be provided later\n"
+                                 "You should start with -f/--file or -i/--input.\n";
+                    return -1;
             }
         }
     }

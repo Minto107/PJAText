@@ -7,6 +7,9 @@
 #include <algorithm>
 #include <regex>
 
+//Michał Janicki
+//s21300
+
 /**
  * @brief Template to print an std::vector of any type.
  * @tparam T Type of the std::vector to be printed.
@@ -187,23 +190,6 @@ void char_amount(const std::string &file, const std::string &output) {
     }
 }
 
-
-/**
- * @brief Function converts std::map to std::vector.
- * @param my_map std::map to convert.
- * @return Returns std::map converted to std::vector.
- */
-
-std::vector<std::string> analyze_word(const std::map<char, int> &my_map) {
-    std::vector<std::string> vec;
-    for (auto[key, value] : my_map) {
-        std::ostringstream oss;
-        oss << key << " - " << value;
-        vec.push_back(oss.str());
-    }
-    return vec;
-}
-
 /**
  * @brief Function finds anagrams specified by anagrams_to_find in file.
  * @param file specifies the file that will be read.
@@ -235,9 +221,7 @@ void find_anagrams(const std::string &file, const std::vector<std::string> &anag
                     for (auto c : s) {
                         occurrences[c] += 1;
                     }
-                    auto analyzed_word_from_vector = analyze_word(occurrences_in_anagrams_to_find);
-                    auto analyzed_word_from_file = analyze_word(occurrences);
-                    if (analyzed_word_from_vector == analyzed_word_from_file) {
+                    if (occurrences == occurrences_in_anagrams_to_find) {
                         if (output.empty() || output == " ") {
                             std::cout << s << ", ";
                         } else {
